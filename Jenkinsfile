@@ -6,7 +6,7 @@ pipeline {
     environment {
         CSV_FILE= "${WORKSPACE}/merged_branches.csv"
         GITHUB_API_URL = "https://bitbucket.org/your_workspace/${params.REPO_NAMES}"
-        GITHUB_CREDENTIAL = credentials('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')
+        GITHUB_CREDENTIAL = credentials('Icg-git-basicauth')
         RESPONSE_FILE = "response.json"
         REPO_FILE = "reposotories.txt"
         OUTPUT_FILE = "branch_details.txt"
