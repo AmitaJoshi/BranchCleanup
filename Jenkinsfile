@@ -13,9 +13,11 @@ pipeline {
     }
     stages {
         stage('SetUp') {
-            script {
-                deleteDir()
-                writeFile file: env.CSV_FILE, text: "REPO_NAME,BRANCH_NAME,LAST_COMMIT_DATE,DAYS_OLD\n"
+            steps {
+                script {
+                    deleteDir()
+                    writeFile file: env.CSV_FILE, text: "REPO_NAME,BRANCH_NAME,LAST_COMMIT_DATE,DAYS_OLD\n"
+                }
             }
         }
         stage('Branches Count') {
