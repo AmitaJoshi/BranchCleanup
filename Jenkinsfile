@@ -30,7 +30,7 @@ pipeline {
                                 credentialsId: "${env.GITHUB_CREDENTIAL}"
                             ]]
                         ])
-                        if (!fileExists(REPO_FILE)) {
+                        if (!fileExists(REPO_FILE)){
                             error "File ${REPO_FILE} does not exist."
                         }
                         def repoList = readFile(REPO_FILE).split('\n').findAll { it.trim() }
