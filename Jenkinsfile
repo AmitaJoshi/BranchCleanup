@@ -8,7 +8,7 @@ pipeline {
         GITHUB_API_URL = "https://bitbucket.org/your_workspace/${params.REPO_NAMES}"
         GITHUB_CREDENTIAL = credentials('Icg-git-basicauth')
         RESPONSE_FILE = "response.json"
-        REPO_FILE = "reposotories.txt"
+        REPO_FILE = "repositories.txt"
         OUTPUT_FILE = "branch_details.txt"
     }
     stages {
