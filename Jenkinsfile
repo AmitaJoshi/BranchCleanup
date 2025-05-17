@@ -36,7 +36,7 @@ pipeline {
                             error "File ${REPO_FILE} does not exist"
                         }
                         def repoList = readFile(REPO_FILE).split('\n').findAll { it.trim() }
-                        print "Repo List is:"+repoList
+                        print "Repo List is :"+repoList
                     }
                 }
             }
