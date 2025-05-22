@@ -120,7 +120,7 @@ pipeline {
                         }
                     }
                     dir("${env.WORKSPACE}"){
-                        def repoList = readFile(REPO_FILE).split('\n').findAll { it.trim() }
+                        //def repoList = readFile(REPO_FILE).split('\n').findAll { it.trim() }
                         print "Repo List is :"+repoList
                         repoList.each { repoName ->
                             print "repo name ="+repoName
