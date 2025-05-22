@@ -40,8 +40,8 @@ pipeline {
                         repoList.each { repoName ->
                            print "repo name ="+repoName
                            dir ("${env.WORKSPACE}"){
-                            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'githubCredentialsId',
-                            usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
+                                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'githubCredentialsId',
+                                usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
                    
                                 /*withcredentials ([usernamePassword(credentialsId:
                                 'icg-bitbucket-basicauth' ,passwordVariable: 'GIT_PASSWORD' , usernameVariable: 'GIT_USERNAME' )])
@@ -65,10 +65,10 @@ pipeline {
                                     """
                                 }
                             }
+                        }
                     }
                 }
             }
-        }
            /*  stage('get Old Merged Branches'){ 
             steps {
                 script {
@@ -150,5 +150,6 @@ pipeline {
                 }
             }
         }*/
+        }
     }
 }
