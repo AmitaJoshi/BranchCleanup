@@ -33,7 +33,7 @@ pipeline {
                             ]]
                         ])
                         if (!fileExists(REPO_FILE)){
-                            error "File ${REPO_FILE}does not exist"
+                            error "File ${REPO_FILE} does not exist"
                         }
                         def repoList = readFile(REPO_FILE).split('\n').findAll { it.trim() }
                         print "Repo List is :"+repoList
@@ -55,7 +55,7 @@ pipeline {
                                         git fetch --all
                                         branches=\$(git branch -r | grep "origin/*" | sed 's/^ [* ]*//')
                                         branch_count=\$(echo "\${branches}" | wc - 1)
-                                        echo "Repository: ${repoName}" >> "${env.WORKSPACE}"/"$     {OUTPUT_FILE}"
+                                        echo "Repository: ${repoName}" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
                                         echo "No of branches are : \${branch_count}" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
                                         echo "Branches:" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
                                         echo "--------" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
