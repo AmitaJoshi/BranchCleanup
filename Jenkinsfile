@@ -41,7 +41,7 @@ pipeline {
                            print "repo name ="+repoName
                            dir ("${env.WORKSPACE}"){
                                 withcredentials ([usernamePassword(credentialsId:
-                                'icg-bitbucket-basicauth' ,passwordVariable: 'GIT_PASSWORD' , usernameVariable: 'GIT_USERNAME' )])
+                                'githubCredentialsId' ,passwordVariable: 'GIT_PASSWORD' , usernameVariable: 'GIT_USERNAME' )])
                                 /* if (repoName.equalsIgnoreCase("grace-database-scripts") || repoName.equalsIgnorecase ("grace-automation-fast") || repoName. equalsIgnorecase ("grace-requesttracker-srv") || repoName.
                                 equalsIgnoreCase ("marqeta-connector-srv")){
                                     print "skip cloning the repo"
