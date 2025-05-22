@@ -21,7 +21,7 @@ pipeline {
             }
         }
         stage('Branches Count'){
-            steps {
+            steps{
                 script {
                     dir("${env.WORKSPACE}"){
                         checkout([
@@ -61,11 +61,12 @@ pipeline {
                                         echo "--------" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
                                     """
                                 }
-                            }
                         }
-        
+                    }
+                }
+            }
         }
-        /*  stage('get Old Merged Branches'){ 
+           /*  stage('get Old Merged Branches'){ 
             steps {
                 script {
                     if(!fileExists(REPO_FILE)){
@@ -147,5 +148,4 @@ pipeline {
             }
         }*/
     }
-}
 }
