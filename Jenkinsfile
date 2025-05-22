@@ -95,7 +95,7 @@ pipeline {
                                     cat ${CSV_FILE}
                                     echo "${current_date}"
                                     echo "${repoName}"
-                                    cd "${env.WORKSPACE}/${repoName}"
+                                    cd "${env.WORKSPACE}${repoName}"
                                     git fetch --all
                                     git branch -r | grep "origin/feature" | sed 's/^ [* ]' ›branches.txt
                                     echo "Text file created" 
