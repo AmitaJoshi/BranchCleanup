@@ -56,7 +56,7 @@ pipeline {
                                         cd /opt/jenkins/.jenkins/workspace/test_repoCleanup_feature_cleanup 
                                         git fetch --all
                                         branches=\$(git branch -r | grep "origin/*" | sed 's/^ [* ]*//')
-                                        branch_count=\$(echo "\${branches}" | wc - 1)
+                                        branch_count=\$(echo "\${branches}" | wc - l)
                                         echo "Repository: ${repoName}" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
                                         echo "No of branches are : \${branch_count}" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
                                         echo "Branches:" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
