@@ -89,14 +89,13 @@ pipeline {
                                 print "skip cloning the repo"
                             }
                             else {
-                                def path = "${env.WORKSPACE}/${repoName}"
                                 sh """
                                     current_date=\$(date +%s)
                                     ls -lart 
                                     cat ${CSV_FILE}
                                     echo "${current_date}"
                                     echo "${repoName}"
-                                    cd ${path}
+                                    cd "${env.WORKSPACE}/${repoName}"
                                     git fetch --all
                                     git branch -r | grep "origin/feature" | sed 's/^ [* ]' ›branches.txt
                                     echo "Text file created" 
