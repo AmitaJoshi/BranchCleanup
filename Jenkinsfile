@@ -40,10 +40,12 @@ pipeline {
                         repoList.each { repoName ->
                            print "repo name ="+repoName
                            dir ("${env.WORKSPACE}"){
-                                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'githubCredentialsId',
-                                usernameVariable: 'USER', passwordVariable: 'PASSWORD']]) {
-                    
-                                /* if (repoName.equalsIgnoreCase("grace-database-scripts") || repoName.equalsIgnorecase ("grace-automation-fast") || repoName. equalsIgnorecase ("grace-requesttracker-srv") || repoName.
+                            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'githubCredentialsId',
+                            usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
+                   
+                                /*withcredentials ([usernamePassword(credentialsId:
+                                'icg-bitbucket-basicauth' ,passwordVariable: 'GIT_PASSWORD' , usernameVariable: 'GIT_USERNAME' )])
+                                 if (repoName.equalsIgnoreCase("grace-database-scripts") || repoName.equalsIgnorecase ("grace-automation-fast") || repoName. equalsIgnorecase ("grace-requesttracker-srv") || repoName.
                                 equalsIgnoreCase ("marqeta-connector-srv")){
                                     print "skip cloning the repo"
                                 } 
