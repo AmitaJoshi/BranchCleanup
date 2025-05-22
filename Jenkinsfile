@@ -68,7 +68,8 @@ pipeline {
                     }
                 }
             }
-           /*  stage('get Old Merged Branches'){ 
+        }
+        stage('get Old Merged Branches'){ 
             steps {
                 script {
                     if(!fileExists(REPO_FILE)){
@@ -148,7 +149,6 @@ pipeline {
                     }
                 }
             }
-        }*/
         }
     }
 }
