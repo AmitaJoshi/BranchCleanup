@@ -134,9 +134,8 @@ pipeline {
                                 else {
                                     sh """
                                         git config --global http.timeout 900
-                                        git clone https://${GIT_USERNAME):$(GIT_PASSWORD}
-                                        @cedt-icg-bitbucket.nam.nsroot.net/bitbucket/scm/ grace-173707/${repoName} .git
-                                        cd "${env.WORKSPACE}"/"${repoName}"
+                                        git clone 'https://github.com/AmitaJoshi/BranchCleanup'
+                                        cd /opt/jenkins/.jenkins/workspace/
                                         git fetch --all
                                         merged_branches=\$(git branch -r --merged | grep -vE 'master|main|develop|release|staging')
                                         echo "Merged Branches:" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
