@@ -49,7 +49,7 @@ pipeline {
                                 else {*/
                                     sh """
                                         git config --global http.timeout 900
-                                        git clone https://${GIT_USERNAME):$(GIT_PASSWORD}
+                                        git clone https://${GIT_USERNAME}:${GIT_PASSWORD}
                                         @cedt-icg-bitbucket.nam.nsroot.net/bitbucket/scm/ grace-173707/${repoName} .git
                                         cd "${env.WORKSPACE}"/"${repoName}"
                                         git fetch --all
