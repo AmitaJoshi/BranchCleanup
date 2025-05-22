@@ -92,24 +92,29 @@ pipeline {
                                 sh """
                                     current_date=\$(date +%s)
                                     ls -lart 
-                                    cat ${CSV_FILE}
-                                    echo "${current_date}"
-                                    echo "${repoName}"
-                                    cd "${env.WORKSPACE}${repoName}"
+                                    cat \$CSV_FILE
+                                    echo "\$current_date"
+                                    echo "\$repoName"
+                                    cd "\$WORKSPACE/\$repoName"
+                                    
                                     git fetch --all
-                                    git branch -r | grep "origin/feature" | sed 's/^ [* ]' ›branches.txt
+                                    git branch -r | grep "origin/feature" | sed 's/^ [* ]//' > branches.txt
                                     echo "Text file created" 
                                     cat branches.txt 
                                     pwd
-                                    while read -r branch; do 
-                                        branch_name=|$(echo "\${branch}" | sed 's|origin/||') last_commit_date=\$(git log -1 --format="%ct" "\${branch}") branch_age_days=\$(( (current_date - last_commit_date) /
-                                        (60*60*24) ))
-                                        formatted_last_commit_date=\$(date -d "@\${last_commit_date}
-                                        " +"%d-%B-%Y")
-                                        if II "\$(branch_age_days)" -gt 365 ]]; then
-                                        echo "${repoName}, \${branch_name}, \$
-                                        {formatted_last_commit_date}, \${branch_age_days}" release_branches=\$(git branch -r | grep "origin/ release" | sed 's/^ [* ]//)
 
+                                    while read -r branch; do 
+                                        branch_name=\$(echo "\$branch" | sed 's|origin/||')
+                                        last_commit_date=\$(git log -1 --format="%ct" "\$branch")
+                                        branch_age_days=\$(( (current_date - last_commit_date) / (60*60*24) ))
+                                        formatted_last_commit_date=\$(date -d "@\$last_commit_date" +"%d-%B-%Y")
+
+                                        if [ "\$branch_age_days" -gt 365 ]; then
+                                            echo "\$repoName, \$branch_name, \$formatted_last_commit_date, \$branch_age_days"
+                                        fi
+                                    done < branches.txt
+
+                                    release_branches=\$(git branch -r | grep "origin/release" | sed 's/^ [* ]//')
                                 """
                             }
                         }
