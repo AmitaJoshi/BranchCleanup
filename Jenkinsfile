@@ -52,7 +52,7 @@ pipeline {
                                 else {*/
                                     sh """
                                         git config --global http.timeout 900
-                                        git clone 'https://github.com/AmitaJoshi/BranchCleanup.git',
+                                        git clone 'https://github.com/AmitaJoshi/BranchCleanup',
                                         credentialsId: "${env.GITHUB_CREDENTIAL}"
                                         cd /opt/jenkins/.jenkins/workspace/test_repoCleanup_feature_cleanup 
                                         git fetch --all
