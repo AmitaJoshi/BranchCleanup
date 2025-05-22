@@ -52,8 +52,7 @@ pipeline {
                                 else {*/
                                     sh """
                                         git config --global http.timeout 900
-                                        git clone 'https://github.com/AmitaJoshi/BranchCleanup',
-                                        credentialsId: "${env.GITHUB_CREDENTIAL}"
+                                        git clone 'https://github.com/AmitaJoshi/BranchCleanup'
                                         cd /opt/jenkins/.jenkins/workspace/test_repoCleanup_feature_cleanup 
                                         git fetch --all
                                         branches=\$(git branch -r | grep "origin/*" | sed 's/^ [* ]*//')
