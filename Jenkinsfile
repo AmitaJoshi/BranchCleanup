@@ -6,7 +6,7 @@ pipeline {
     environment {
         CSV_FILE= "${WORKSPACE}/merged_branches.csv"
         GITHUB_API_URL = "https://bitbucket.org/your_workspace/${params.REPO_NAMES}"
-        GITHUB_CREDENTIAL = credentials('Icg-git-basicauth')
+        GITHUB_CREDENTIAL = credentials('githubCredentialsId')
         RESPONSE_FILE = "response.json"
         REPO_FILE = "repositories.txt"
         OUTPUT_FILE = "branch_details.txt"
@@ -40,8 +40,9 @@ pipeline {
                         repoList.each { repoName ->
                            print "repo name ="+repoName
                            dir ("${env.WORKSPACE}"){
-                                withcredentials ([usernamePassword(credentialsId:
-                                'githubCredentialsId' ,passwordVariable: 'GIT_PASSWORD' , usernameVariable: 'GIT_USERNAME' )])
+                                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'githubCredentialsId',
+                                usernameVariable: 'USER', passwordVariable: 'PASSWORD']]) {
+                    
                                 /* if (repoName.equalsIgnoreCase("grace-database-scripts") || repoName.equalsIgnorecase ("grace-automation-fast") || repoName. equalsIgnorecase ("grace-requesttracker-srv") || repoName.
                                 equalsIgnoreCase ("marqeta-connector-srv")){
                                     print "skip cloning the repo"
@@ -61,7 +62,7 @@ pipeline {
                                         echo "--------" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
                                     """
                                 }
-                        }
+                            }
                     }
                 }
             }
