@@ -10,6 +10,7 @@ pipeline {
         RESPONSE_FILE = "response.json"
         REPO_FILE = "repositories.txt"
         OUTPUT_FILE = "branch_details.txt"
+        path = "${env.WORKSPACE}/${repoName}"
     }
     stages {
         stage('SetUp') {
@@ -94,7 +95,7 @@ pipeline {
                                     ls -lart cat ${CSV_FILE}
                                     echo "${current_date}"
                                     echo "${repoName}"
-                                    cd "${env.WORKSPACE}"/"${repoName}"
+                                    cd ${path}
                                     git fetch --all
                                     git branch -r | grep "origin/feature" | sed 's/^ [* ]' ›branches.txt
                                     echo "Text file created" 
