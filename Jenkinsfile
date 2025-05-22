@@ -124,7 +124,7 @@ pipeline {
                         print "Repo List is :"+repoList
                         repoList.each { repoName ->
                             print "repo name ="+repoName
-                            dir ("$(env.WORKSPACE)"){
+                            dir ("${env.WORKSPACE}"){
                                 withcredentials ([usernamePassword(credentialsId:
                                 'icg-bitbucket-basicauth' ,passwordVariable: 'GIT_PASSWORD' , usernameVariable: 'GIT_USERNAME' )])
                                 if (repoName-equalsIgnoreCase("grace-database-scripts") || repoName.equalsIgnorecase ("grace-automation-fast") || repoName. equalsIgnorecase ("grace-requesttracker-srv") || repoName.
