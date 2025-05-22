@@ -52,8 +52,8 @@ pipeline {
                                 else {*/
                                     sh """
                                         git config --global http.timeout 900
-                                        git clone https://${GIT_USERNAME}:${GIT_PASSWORD}
-                                        @cedt-icg-bitbucket.nam.nsroot.net/bitbucket/scm/ grace-173707/${repoName} .git
+                                        "https://github.com/AmitaJoshi/BranchCleanup.git",
+                                        credentialsId: "${env.GITHUB_CREDENTIAL}"
                                         cd "${env.WORKSPACE}"/"${repoName}"
                                         git fetch --all
                                         branches=\$(git branch -r | grep "origin/*" | sed 's/^ [* ]*//')
