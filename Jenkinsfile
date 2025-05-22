@@ -54,7 +54,7 @@ pipeline {
                                         git config --global http.timeout 900
                                         "https://github.com/AmitaJoshi/BranchCleanup.git",
                                         credentialsId: "${env.GITHUB_CREDENTIAL}"
-                                        cd "${env.WORKSPACE}"/"${repoName}"
+                                        cd /opt/jenkins/.jenkins/workspace/test_repoCleanup_feature_cleanup 
                                         git fetch --all
                                         branches=\$(git branch -r | grep "origin/*" | sed 's/^ [* ]*//')
                                         branch_count=\$(echo "\${branches}" | wc - 1)
