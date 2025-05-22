@@ -10,7 +10,6 @@ pipeline {
         RESPONSE_FILE = "response.json"
         REPO_FILE = "repositories.txt"
         OUTPUT_FILE = "branch_details.txt"
-        path = "${env.WORKSPACE}/${repoName}"
     }
     stages {
         stage('SetUp') {
@@ -90,9 +89,11 @@ pipeline {
                                 print "skip cloning the repo"
                             }
                             else {
+                                def path = "${env.WORKSPACE}/${repoName}"
                                 sh """
                                     current_date=\$(date +%s)
-                                    ls -lart cat ${CSV_FILE}
+                                    ls -lart 
+                                    cat ${CSV_FILE}
                                     echo "${current_date}"
                                     echo "${repoName}"
                                     cd ${path}
