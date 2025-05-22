@@ -82,8 +82,8 @@ pipeline {
                     repoList.each { repoName ->
                         print "repo name ="+repoName
                         dir("${env.WORKSPACE}"){
-                            withcredentials ([usernamePassword(credentialsId:
-                            'icg-bitbucket-basicauth' ,passwordVariable: 'GIT_PASSWORD' , usernameVariable: 'GIT_USERNAME' )])
+                            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'githubCredentialsId',
+                            usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']])
                             if (repoName-equalsIgnoreCase("grace-database-scripts") || repoName.equalsIgnorecase ("grace-automation-fast") || repoName. equalsIgnorecase ("grace-requesttracker-srv") || repoName.
                             equalsIgnoreCase ("marqeta-connector-srv")){
                                 print "skip cloning the repo"
