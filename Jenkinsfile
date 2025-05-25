@@ -120,7 +120,7 @@ pipeline {
                             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'githubCredentialsId',
                             usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]){
                             sh """
-                                cd "\${repoName}"
+                                cd "${repoName}"
                                 git config --global --add safe.directory '*'
                                 git fetch origin "+refs/heads/*:refs/remotes/origin/*"
                                 git ls-remote --heads origin
@@ -140,7 +140,7 @@ pipeline {
                                 echo "##################################################" >> "\${WORKSPACE}/\${OUTPUT_FILE}"
                                 echo "\$merged_branches" | while read -r branch; do
                                     # Trim spaces
-                                    branch=$(echo "\$branch" | xargs)
+                                    branch=\$(echo "\$branch" | xargs)
                                     echo "repo name inside for loop = $\{repoName}"
                                     last_commit_date_epoch=\$(git log -1 --format=%ct "\${branch}" 2>/dev/null)
                                     last_commit_date=\$(date -d "@\${last_commit_date_epoch}" +"%Y-%m-%d %H:%M:%S")
