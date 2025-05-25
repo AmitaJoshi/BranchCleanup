@@ -136,4 +136,9 @@ pipeline {
             }
         }
     }
+    post {
+    always {
+        archiveArtifacts artifacts: 'merged_branches.csv, branch_details.txt', onlyIfSuccessful: false
+    }
+}
 }
