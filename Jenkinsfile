@@ -122,7 +122,7 @@ pipeline {
                                 merged_branches=\$( \
                                 { \
                                     git for-each-ref --format='%(refname:short)' refs/remotes/origin/release* 2>/dev/null | while read release_branch; do \
-                                    git branch -r --merged "$release_branch"; \
+                                    git branch -r --merged "\$release_branch"; \
                                     done; \
                                     git branch -r --merged origin/main 2>/dev/null || true; \
                                     git branch -r --merged origin/master 2>/dev/null || true; \
