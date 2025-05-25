@@ -1,8 +1,8 @@
 pipeline {
     agent any
-    parameters {
+    /* parameters {
         choice(name: 'REPO_NAMES', choices: ['BranchCleanup'], description: 'select a repository')
-    }
+    } */
     environment {
         CSV_FILE= "${WORKSPACE}/merged_branches.csv"
         GITHUB_API_URL = "https://bitbucket.org/your_workspace/${params.REPO_NAMES}"
