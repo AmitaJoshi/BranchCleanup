@@ -147,8 +147,10 @@ pipeline {
                                     current_date_epoch=\$(date +%s)
                                     branch_age_days=\$(( (current_date_epoch - last_commit_date_epoch) / 86400 ))
                                     echo "Repo: ${repoName}, Branch: \${branch}, Last Commit Date: \${last_commit_date}, Age in Days: \${branch_age_days}"
-                                    if [ "\$branch_age_days" -gt 30 ]; then
+                                    if [ "\$branch_age_days" -gt 300 ]; then
                                         echo "${repoName},\${branch},\${last_commit_date},\${branch_age_days}" >> "\${CSV_FILE}"
+                                        git branch -d "\${branch}" || true
+                                        echo "Deleted branch: \${branch} in repository: ${repoName}"
                                     fi 
                                     cat "\$CSV_FILE"
                                 done
