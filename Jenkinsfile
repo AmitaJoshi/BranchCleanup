@@ -116,7 +116,9 @@ pipeline {
                             usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]){
                             sh """
                                 cd "\${repoName}"
-                                git fetch --all
+                                git config --global --add safe.directory '*'
+                                git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+                                git ls-remote --heads origin
                                 merged_branches=\$(comm -12 <(git branch -r --merged origin/release | sort) <(git branch -r --merged origin/main | sort) |  comm -12 - <(git branch -r --merged origin/master | sort) | grep -vE 'origin/(master|main|develop|release|staging)')
                                 echo "Merged Branches:" >> "\${WORKSPACE}/\${OUTPUT_FILE}"
                                 echo "--------" >> "\${WORKSPACE}/\${OUTPUT_FILE}"
