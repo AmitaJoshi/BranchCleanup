@@ -126,7 +126,7 @@ pipeline {
                                         last_commit_date_epoch=\$(date -d "\${last_commit_date}" +%s)
                                         current_date_epoch=\$(date +%s)
                                         days_old=\$(( (\$current_date_epoch - \$last_commit_date_epoch) / 86400 ))
-                                        echo "\${branch},\${last_commit_date},\${days_old}" >> "${CSV_FILE}"
+                                        echo "\${repoName}\${branch},\${last_commit_date},\${days_old}" >> "${CSV_FILE}"
                                     done
                                 """
                             }        
