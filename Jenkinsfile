@@ -136,9 +136,8 @@ pipeline {
                                 echo "--------" >> "\${WORKSPACE}/\${OUTPUT_FILE}"
                                 for branch in \${merged_branches}; do
                                     echo "repo name inside for loop = \${repoName}"
-                                    last_commit_date_epoch=\$(git log -1 --format=%ct "\${branch}")
-                                    last_commit_date_human=\$(date -d "@\${last_commit_date_epoch}" +"%Y-%m-%d %H:%M:%S")
-                                    
+                                    last_commit_date_epoch=\$(git log -1 --format=%ct "\${branch}" 2>/dev/null)
+                                    last_commit_date=\$(date -d "@${last_commit_date_epoch}" +"%Y-%m-%d %H:%M:%S")
                                     current_date_epoch=\$(date +%s)
                                     days_old=\$(( (current_date_epoch - last_commit_date_epoch) / 86400 ))
 
