@@ -132,11 +132,12 @@ pipeline {
                                 echo "Merged Branches:" >> "\${WORKSPACE}/\${OUTPUT_FILE}"
                                 echo "--------" >> "\${WORKSPACE}/\${OUTPUT_FILE}"
                                 for branch in \${merged_branches}; do
+                                    echo "repo name inside for loop = \${repoName}"
                                     last_commit_date=\$(git log -1 --format=%cd --date=iso "\${branch}")
                                     last_commit_date_epoch=\$(date -d "\${last_commit_date}" +%s)
                                     current_date_epoch=\$(date +%s)
                                     days_old=\$(( (\${current_date_epoch} - \${last_commit_date_epoch}) / 86400 ))
-                                    echo "\${repoName}\${branch},\${last_commit_date},\${days_old}" >> "\${CSV_FILE}"
+                                    echo "\${repoName},\${branch},\${last_commit_date},\${days_old}" >> "\${CSV_FILE}"
                                 done
                             """
                             }        
