@@ -141,7 +141,7 @@ pipeline {
                                 echo "\$merged_branches" | while read -r branch; do
                                     # Trim spaces
                                     branch=$(echo "\$branch" | xargs)
-                                    echo "repo name inside for loop = ${repoName}"
+                                    echo "repo name inside for loop = $\{repoName}"
                                     last_commit_date_epoch=\$(git log -1 --format=%ct "\${branch}" 2>/dev/null)
                                     last_commit_date=\$(date -d "@\${last_commit_date_epoch}" +"%Y-%m-%d %H:%M:%S")
                                     current_date_epoch=\$(date +%s)
