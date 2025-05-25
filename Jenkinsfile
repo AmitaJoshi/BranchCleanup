@@ -119,12 +119,10 @@ pipeline {
                             print "repo name ="+repoName
                             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'githubCredentialsId',
                             usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]){
-                            sh """
-                                #checkout
                                 checkout([$class: 'GitSCM',branches: [[name: 'master']],userRemoteConfigs: [[
                                 url: "https://github.com/AmitaJoshi/${repoName}.git",
-                                credentialsId: "${env.GITHUB_CREDENTIAL}"]]
-])
+                                credentialsId: "${env.GITHUB_CREDENTIAL}"]]])
+                                sh """
                                 git config --global --add safe.directory '*'
                                 git fetch origin "+refs/heads/*:refs/remotes/origin/*"
                                 git ls-remote --heads origin
