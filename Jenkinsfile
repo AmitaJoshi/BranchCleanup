@@ -52,8 +52,8 @@ pipeline {
                                 else {*/
                                     sh """
                                         git config --global http.timeout 900
-                                        git clone 'https://github.com/AmitaJoshi/BranchCleanup'
-                                        cd /opt/jenkins/.jenkins/workspace/test_repoCleanup_feature_cleanup 
+                                        git clone 'https://github.com/AmitaJoshi/${repoName}'
+                                        cd ${repoName} 
                                         git fetch --all
                                         branches=\$(git branch -r | grep "origin/*" | sed 's/^ [* ]*//')
                                         branch_count=\$(echo "\${branches}" | wc -l)
@@ -126,8 +126,8 @@ pipeline {
                                 {
                                     sh """
                                         git config --global http.timeout 900
-                                        git clone 'https://github.com/AmitaJoshi/BranchCleanup'
-                                        cd /opt/jenkins/.jenkins/workspace/
+                                        git clone 'https://github.com/AmitaJoshi/${repoName}'
+                                        cd ${repoName}
                                         git fetch --all
                                         merged_branches=\$(git branch -r --merged | grep -vE 'master|main|develop|release|staging')
                                         echo "Merged Branches:" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
