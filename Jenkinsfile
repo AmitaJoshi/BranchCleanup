@@ -113,22 +113,21 @@ pipeline {
                         repoList.each { repoName ->
                             print "repo name ="+repoName
                             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'githubCredentialsId',
-                            usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']])
-                            {
-                                sh """
-                                    cd "\${repoName}"
-                                    git fetch --all
-                                    merged_branches=$(comm -12 <(git branch -r --merged origin/release | sort) <(git branch -r --merged origin/main | sort) |  comm -12 - <(git branch -r --merged origin/master | sort) |    grep -vE 'origin/(master|main|develop|release|staging)')
-                                    echo "Merged Branches:" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
-                                    echo "--------" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
-                                    for branch in \${merged_branches}; do
-                                        last_commit_date=\$(git log -1 --format=%cd --date=iso "\${branch}")
-                                        last_commit_date_epoch=\$(date -d "\${last_commit_date}" +%s)
-                                        current_date_epoch=\$(date +%s)
-                                        days_old=\$(( (\$current_date_epoch - \$last_commit_date_epoch) / 86400 ))
-                                        echo "\${repoName}\${branch},\${last_commit_date},\${days_old}" >> "${CSV_FILE}"
-                                    done
-                                """
+                            usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]){
+                            sh """
+                                cd "\${repoName}"
+                                git fetch --all
+                                merged_branches=\$(comm -12 <(git branch -r --merged origin/release | sort) <(git branch -r --merged origin/main | sort) |  comm -12 - <(git branch -r --merged origin/master | sort) | grep -vE 'origin/(master|main|develop|release|staging)')
+                                echo "Merged Branches:" >> "\${WORKSPACE}/\${OUTPUT_FILE}"
+                                echo "--------" >> "\${WORKSPACE}/\${OUTPUT_FILE}"
+                                for branch in \${merged_branches}; do
+                                    last_commit_date=\$(git log -1 --format=%cd --date=iso "\${branch}")
+                                    last_commit_date_epoch=\$(date -d "\${last_commit_date}" +%s)
+                                    current_date_epoch=\$(date +%s)
+                                    days_old=\$(( (\${current_date_epoch} - \${last_commit_date_epoch}) / 86400 ))
+                                    echo "\${repoName}\${branch},\${last_commit_date},\${days_old}" >> "\${CSV_FILE}"
+                                done
+                            """
                             }        
                         }
                     }
