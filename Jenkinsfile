@@ -99,7 +99,7 @@ pipeline {
                                         last_commit_date=\$(git log -1 --format="%ct" "\$branch")
                                         branch_age_days=\$(( (current_date - last_commit_date) / (60*60*24) ))
                                         formatted_last_commit_date=\$(date -d "@\$last_commit_date" +"%d-%B-%Y")
-                                        if [ "\$branch_age_days" -gt 45 ]; then
+                                        if [ "\$branch_age_days" -gt 30 ]; then
                                             echo "\$repoName, \$branch_name, \$formatted_last_commit_date, \$branch_age_days" >> "\$CSV_FILE"
                                             cat "\$CSV_FILE" 
                                             break
@@ -138,12 +138,12 @@ pipeline {
                                     last_commit_date_epoch=\$(git log -1 --format=%ct "\${branch}" 2>/dev/null)
                                     last_commit_date=\$(date -d "@\${last_commit_date_epoch}" +"%Y-%m-%d %H:%M:%S")
                                     current_date_epoch=\$(date +%s)
-                                    days_old=\$(( (current_date_epoch - last_commit_date_epoch) / 86400 ))
-                                    if [ "\$branch_age_days" -gt 45 ]; then
-                                        echo "\${repoName},\${branch},\${last_commit_date},\${days_old}" >> "\${CSV_FILE}"
-                                        cat "\$CSV_FILE" 
+                                    branch_age_days=\$(( (current_date_epoch - last_commit_date_epoch) / 86400 ))
+                                    if [ "\$branch_age_days" -gt 30 ]; then
+                                        echo "${repoName},\${branch},\${last_commit_date},\${days_old}" >> "\${CSV_FILE}"
                                         break
-                                    fi
+                                    fi 
+                                    cat "\$CSV_FILE"
                                 done
 
                             """
