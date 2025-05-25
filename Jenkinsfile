@@ -140,11 +140,12 @@ pipeline {
                                     current_date_epoch=\$(date +%s)
                                     days_old=\$(( (current_date_epoch - last_commit_date_epoch) / 86400 ))
                                     if [ "\$branch_age_days" -gt 45 ]; then
-                                            echo "\$repoName, \$branch_name, \$formatted_last_commit_date, \$branch_age_days" >> "\$CSV_FILE"
+                                            echo "${repoName},\${branch},\${last_commit_date},\${days_old}" >> "\${CSV_FILE}"
                                             cat "\$CSV_FILE" 
                                             break
-                                    fi
+                                        fi
                                 done
+
                             """
                             }        
                         }
