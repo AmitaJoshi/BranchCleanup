@@ -115,7 +115,7 @@ pipeline {
                             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'githubCredentialsId',
                             usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]){
                             sh """
-                                cd "\${repoName}"
+                                cd "${repoName}"
                                 git config --global --add safe.directory '*'
                                 git fetch origin "+refs/heads/*:refs/remotes/origin/*"
                                 git ls-remote --heads origin
