@@ -42,15 +42,7 @@ pipeline {
                            dir ("${env.WORKSPACE}"){
                                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'githubCredentialsId',
                                 usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
-                   
-                                /*withcredentials ([usernamePassword(credentialsId:
-                                'icg-bitbucket-basicauth' ,passwordVariable: 'GIT_PASSWORD' , usernameVariable: 'GIT_USERNAME' )])
-                                 if (repoName.equalsIgnoreCase("grace-database-scripts") || repoName.equalsIgnorecase ("grace-automation-fast") || repoName. equalsIgnorecase ("grace-requesttracker-srv") || repoName.
-                                equalsIgnoreCase ("marqeta-connector-srv")){
-                                    print "skip cloning the repo"
-                                } 
-                                else {*/
-                                    sh """
+                                     sh """
                                         git config --global http.timeout 900
                                         git clone 'https://github.com/AmitaJoshi/${repoName}'
                                         cd ${repoName} 
@@ -120,26 +112,24 @@ pipeline {
                         print "Repo List is :"+repoList
                         repoList.each { repoName ->
                             print "repo name ="+repoName
-                            dir ("${env.WORKSPACE}"){
-                                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'githubCredentialsId',
-                                usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']])
-                                {
-                                    sh """
-                                        cd ${repoName}
-                                        git fetch --all
-                                        merged_branches=\$(git branch -r --merged | grep -vE 'master|main|develop|release|staging')
-                                        echo "Merged Branches:" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
-                                        echo "--------" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
-                                        for branch in \${merged_branches}; do
-                                            last_commit_date=\$(git log -1 --format=%cd --date=iso "\${branch}")
-                                            last_commit_date_epoch=\$(date -d "\${last_commit_date}" +%s)
-                                            current_date_epoch=\$(date +%s)
-                                            days_old=\$(( (\$current_date_epoch - \$last_commit_date_epoch) / 86400 ))
-                                            echo "\${branch},\${last_commit_date},\${days_old}" >> "${env.WORKSPACE}"/"${CSV_FILE}"
-                                        done
-                                    """
-                                }
-                            }
+                            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'githubCredentialsId',
+                            usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']])
+                            {
+                                sh """
+                                    cd ${repoName}
+                                    git fetch --all
+                                    merged_branches=\$(git branch -r --merged | grep -vE 'master|main|develop|release|staging')
+                                    echo "Merged Branches:" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
+                                    echo "--------" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
+                                    for branch in \${merged_branches}; do
+                                        last_commit_date=\$(git log -1 --format=%cd --date=iso "\${branch}")
+                                        last_commit_date_epoch=\$(date -d "\${last_commit_date}" +%s)
+                                        current_date_epoch=\$(date +%s)
+                                        days_old=\$(( (\$current_date_epoch - \$last_commit_date_epoch) / 86400 ))
+                                        echo "\${branch},\${last_commit_date},\${days_old}" >> "${env.WORKSPACE}"/"${CSV_FILE}"
+                                    done
+                                """
+                            }        
                         }
                     }
                 }
