@@ -125,7 +125,6 @@ pipeline {
                                 usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']])
                                 {
                                     sh """
-                                        rm -rf BranchCleanup
                                         git config --global http.timeout 900
                                         git clone 'https://github.com/AmitaJoshi/BranchCleanup'
                                         cd /opt/jenkins/.jenkins/workspace/
