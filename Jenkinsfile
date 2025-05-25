@@ -125,8 +125,6 @@ pipeline {
                                 usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']])
                                 {
                                     sh """
-                                        git config --global http.timeout 900
-                                        git clone 'https://github.com/AmitaJoshi/${repoName}'
                                         cd ${repoName}
                                         git fetch --all
                                         merged_branches=\$(git branch -r --merged | grep -vE 'master|main|develop|release|staging')
