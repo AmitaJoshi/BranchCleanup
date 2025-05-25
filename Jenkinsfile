@@ -116,7 +116,7 @@ pipeline {
                             usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']])
                             {
                                 sh """
-                                    cd "${repoName}"
+                                    cd "\${repoName}"
                                     git fetch --all
                                     #merged_branches=\$(git branch -r --merged | grep -vE 'master|main|develop|release|staging|feature')
                                     #merged_branches=\$(git branch -r --merged origin/release | grep -vE 'origin/(master|main|develop|release|staging)')
