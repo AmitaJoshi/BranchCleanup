@@ -136,7 +136,7 @@ pipeline {
                                 echo "\${merged_branches}" >> "\${WORKSPACE}/\${OUTPUT_FILE}"
                                 echo "\n" >> "\${WORKSPACE}/\${OUTPUT_FILE}"
                                 echo "##################################################" >> "\${WORKSPACE}/\${OUTPUT_FILE}"
-                                for branch in \${merged_branches}; do
+                                for branch in ${merged_branches}; do
                                     echo "repo name inside for loop = ${repoName}"
                                     last_commit_date_epoch=\$(git log -1 --format=%ct "\${branch}" 2>/dev/null)
                                     last_commit_date=\$(date -d "@\${last_commit_date_epoch}" +"%Y-%m-%d %H:%M:%S")
