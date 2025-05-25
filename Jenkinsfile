@@ -6,7 +6,7 @@ pipeline {
     environment {
         CSV_FILE= "${WORKSPACE}/merged_branches.csv"
         GITHUB_API_URL = "https://bitbucket.org/your_workspace/${params.REPO_NAMES}"
-        GITHUB_CREDENTIAL = credentials('Icg-git-basicauth')
+        GITHUB_CREDENTIAL = credentials('githubCredentialsId')
         RESPONSE_FILE = "response.json"
         REPO_FILE = "repositories.txt"
         OUTPUT_FILE = "branch_details.txt"
@@ -15,13 +15,13 @@ pipeline {
         stage('SetUp') {
             steps {
                 script {
-                    deleteDir()
-                    //writeFile file: env.CSV_FILE, text: "REPO_NAME,BRANCH_NAME,LAST_COMMIT_DATE,DAYS_OLD\n"
+                    cleanWs()
+                    writeFile file: env.CSV_FILE, text: "REPO_NAME,BRANCH_NAME,LAST_COMMIT_DATE,DAYS_OLD\n"
                 }
             }
         }
         stage('Branches Count'){
-            steps {
+            steps{
                 script {
                     dir("${env.WORKSPACE}"){
                         checkout([
@@ -40,22 +40,24 @@ pipeline {
                         repoList.each { repoName ->
                            print "repo name ="+repoName
                            dir ("${env.WORKSPACE}"){
-                                withcredentials ([usernamePassword(credentialsId:
+                                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'githubCredentialsId',
+                                usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
+                   
+                                /*withcredentials ([usernamePassword(credentialsId:
                                 'icg-bitbucket-basicauth' ,passwordVariable: 'GIT_PASSWORD' , usernameVariable: 'GIT_USERNAME' )])
-                                /* if (repoName.equalsIgnoreCase("grace-database-scripts") || repoName.equalsIgnorecase ("grace-automation-fast") || repoName. equalsIgnorecase ("grace-requesttracker-srv") || repoName.
+                                 if (repoName.equalsIgnoreCase("grace-database-scripts") || repoName.equalsIgnorecase ("grace-automation-fast") || repoName. equalsIgnorecase ("grace-requesttracker-srv") || repoName.
                                 equalsIgnoreCase ("marqeta-connector-srv")){
                                     print "skip cloning the repo"
                                 } 
                                 else {*/
                                     sh """
                                         git config --global http.timeout 900
-                                        git clone https://${GIT_USERNAME):$(GIT_PASSWORD}
-                                        @cedt-icg-bitbucket.nam.nsroot.net/bitbucket/scm/ grace-173707/${repoName} .git
-                                        cd "${env.WORKSPACE}"/"${repoName}"
+                                        git clone 'https://github.com/AmitaJoshi/BranchCleanup'
+                                        cd /opt/jenkins/.jenkins/workspace/test_repoCleanup_feature_cleanup 
                                         git fetch --all
                                         branches=\$(git branch -r | grep "origin/*" | sed 's/^ [* ]*//')
-                                        branch_count=\$(echo "\${branches}" | wc - 1)
-                                        echo "Repository: ${repoName}" >> "${env.WORKSPACE}"/"$     {OUTPUT_FILE}"
+                                        branch_count=\$(echo "\${branches}" | wc -l)
+                                        echo "Repository: ${repoName}" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
                                         echo "No of branches are : \${branch_count}" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
                                         echo "Branches:" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
                                         echo "--------" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
@@ -63,9 +65,11 @@ pipeline {
                                 }
                             }
                         }
-        
+                    }
+                }
+            }
         }
-        /*  stage('get Old Merged Branches'){ 
+        stage('get Old Merged Branches'){ 
             steps {
                 script {
                     if(!fileExists(REPO_FILE)){
@@ -78,55 +82,52 @@ pipeline {
                     repoList.each { repoName ->
                         print "repo name ="+repoName
                         dir("${env.WORKSPACE}"){
-                            withcredentials ([usernamePassword(credentialsId:
-                            'icg-bitbucket-basicauth' ,passwordVariable: 'GIT_PASSWORD' , usernameVariable: 'GIT_USERNAME' )])
-                            if (repoName-equalsIgnoreCase("grace-database-scripts") || repoName.equalsIgnorecase ("grace-automation-fast") || repoName. equalsIgnorecase ("grace-requesttracker-srv") || repoName.
-                            equalsIgnoreCase ("marqeta-connector-srv")){
-                                print "skip cloning the repo"
-                            }
-                            else {
+                            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'githubCredentialsId',
+                            usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']])
+                            {
                                 sh """
                                     current_date=\$(date +%s)
-                                    ls -lart cat ${CSV_FILE}
-                                    echo "${current_date}"
-                                    echo "${repoName}"
-                                    cd "${env.WORKSPACE}"/"${repoName}"
+                                    ls -lart 
+                                    cat \$CSV_FILE
+                                    echo "\$current_date"
+                                    echo "\$repoName"
+                                    cd "\$WORKSPACE/\$repoName"
+                                    
                                     git fetch --all
-                                    git branch -r | grep "origin/feature" | sed 's/^ [* ]' ›branches.txt
+                                    git branch -r | grep "origin/feature" | sed 's/^ [* ]//' > branches.txt
                                     echo "Text file created" 
                                     cat branches.txt 
                                     pwd
-                                    while read -r branch; do 
-                                        branch_name=|$(echo "\${branch}" | sed 's|origin/||') last_commit_date=\$(git log -1 --format="%ct" "\${branch}") branch_age_days=\$(( (current_date - last_commit_date) /
-                                        (60*60*24) ))
-                                        formatted_last_commit_date=\$(date -d "@\${last_commit_date}
-                                        " +"%d-%B-%Y")
-                                        if II "\$(branch_age_days)" -gt 365 ]]; then
-                                        echo "${repoName}, \${branch_name}, \$
-                                        {formatted_last_commit_date}, \${branch_age_days}" release_branches=\$(git branch -r | grep "origin/ release" | sed 's/^ [* ]//)
 
+                                    while read -r branch; do 
+                                        branch_name=\$(echo "\$branch" | sed 's|origin/||')
+                                        last_commit_date=\$(git log -1 --format="%ct" "\$branch")
+                                        branch_age_days=\$(( (current_date - last_commit_date) / (60*60*24) ))
+                                        formatted_last_commit_date=\$(date -d "@\$last_commit_date" +"%d-%B-%Y")
+
+                                        if [ "\$branch_age_days" -gt 1 ]; then
+                                            echo "\$repoName, \$branch_name, \$formatted_last_commit_date, \$branch_age_days"
+                                        fi
+                                    done < branches.txt
+
+                                    release_branches=\$(git branch -r | grep "origin/release" | sed 's/^ [* ]//')
                                 """
                             }
                         }
                     }
                     dir("${env.WORKSPACE}"){
-                        def repoList = readFile(REPO_FILE).split('\n').findAll { it.trim() }
+                        //def repoList = readFile(REPO_FILE).split('\n').findAll { it.trim() }
                         print "Repo List is :"+repoList
                         repoList.each { repoName ->
                             print "repo name ="+repoName
-                            dir ("$(env.WORKSPACE)"){
-                                withcredentials ([usernamePassword(credentialsId:
-                                'icg-bitbucket-basicauth' ,passwordVariable: 'GIT_PASSWORD' , usernameVariable: 'GIT_USERNAME' )])
-                                if (repoName-equalsIgnoreCase("grace-database-scripts") || repoName.equalsIgnorecase ("grace-automation-fast") || repoName. equalsIgnorecase ("grace-requesttracker-srv") || repoName.
-                                equalsIgnoreCase ("marqeta-connector-srv")){
-                                    print "skip cloning the repo"
-                                }
-                                else {
+                            dir ("${env.WORKSPACE}"){
+                                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'githubCredentialsId',
+                                usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']])
+                                {
                                     sh """
                                         git config --global http.timeout 900
-                                        git clone https://${GIT_USERNAME):$(GIT_PASSWORD}
-                                        @cedt-icg-bitbucket.nam.nsroot.net/bitbucket/scm/ grace-173707/${repoName} .git
-                                        cd "${env.WORKSPACE}"/"${repoName}"
+                                        git clone 'https://github.com/AmitaJoshi/BranchCleanup'
+                                        cd /opt/jenkins/.jenkins/workspace/
                                         git fetch --all
                                         merged_branches=\$(git branch -r --merged | grep -vE 'master|main|develop|release|staging')
                                         echo "Merged Branches:" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
@@ -145,6 +146,6 @@ pipeline {
                     }
                 }
             }
-        }*/
+        }
     }
 }
