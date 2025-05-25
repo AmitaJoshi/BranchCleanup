@@ -119,7 +119,15 @@ pipeline {
                                 git config --global --add safe.directory '*'
                                 git fetch origin "+refs/heads/*:refs/remotes/origin/*"
                                 git ls-remote --heads origin
-                                merged_branches=\$(comm -12 <(git branch -r --merged origin/release | sort) <(git branch -r --merged origin/main | sort) |  comm -12 - <(git branch -r --merged origin/master | sort) | grep -vE 'origin/(master|main|develop|release|staging)')
+                                merged_branches=\$( \
+                                { \
+                                    git for-each-ref --format='%(refname:short)' refs/remotes/origin/release* 2>/dev/null | while read release_branch; do \
+                                    git branch -r --merged "$release_branch"; \
+                                    done; \
+                                    git branch -r --merged origin/main 2>/dev/null || true; \
+                                    git branch -r --merged origin/master 2>/dev/null || true; \
+                                } | sort -u | grep -vE 'origin/(master|main|develop|release|staging)' )
+
                                 echo "Merged Branches:" >> "\${WORKSPACE}/\${OUTPUT_FILE}"
                                 echo "--------" >> "\${WORKSPACE}/\${OUTPUT_FILE}"
                                 for branch in \${merged_branches}; do
