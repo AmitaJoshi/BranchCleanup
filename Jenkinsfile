@@ -82,72 +82,76 @@ pipeline {
                             usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']])
                             {
                                 sh """
-                                    current_date=\$(date +%s)
-                                    ls -lart 
-                                    cat \$CSV_FILE
-                                    echo "\$current_date"
-                                    echo "\$repoName"
-                                    cd "\$WORKSPACE/\$repoName"
+            cd "${repoName}"
+            git config --global --add safe.directory '*'
+            git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+            git ls-remote --heads origin
 
-                                    git fetch --all
-                                    git branch -r | grep "origin/feature" | sed 's/^ [* ]//' > branches.txt
-                                    echo "Text file created" 
-                                    cat branches.txt 
-                                    pwd
-                                    while read -r branch; do 
-                                        branch_name=\$(echo "\$branch" | sed 's|origin/||')
-                                        last_commit_date=\$(git log -1 --format="%ct" "\$branch")
-                                        branch_age_days=\$(( (current_date - last_commit_date) / (60*60*24) ))
-                                        formatted_last_commit_date=\$(date -d "@\$last_commit_date" +"%d-%B-%Y")
-                                        for branch in ${merged_branches}; do
-                                        ...
-                                        days_old=$(( (current_date_epoch - last_commit_date_epoch) / 86400 ))
-                                            if [ "\$branch_age_days" -gt 20 ]; then
-                                                echo "\$repoName, \$branch_name, \$formatted_last_commit_date, \$branch_age_days" >> "\$CSV_FILE"
-                                                cat "\$CSV_FILE" 
-                                                break
-                                            fi
-                                    done < branches.txt
-                                    done
-                                    release_branches=\$(git branch -r | grep "origin/release" | sed 's/^ [* ]//')
-                                """
+            current_date_epoch=\$(date +%s)
+
+            merged_branches=\$(
+                {
+                    git for-each-ref --format='%(refname:short)' refs/remotes/origin/release* 2>/dev/null | while read release_branch; do
+                        git branch -r --merged "\$release_branch"
+                    done
+                    git branch -r --merged origin/main 2>/dev/null || true
+                    git branch -r --merged origin/master 2>/dev/null || true
+                } | sort -u | grep -vE 'origin/(master|main|develop|release|staging)'
+            )
+
+            echo "Merged Branches:" >> "\${WORKSPACE}/\${OUTPUT_FILE}"
+            echo "--------" >> "\${WORKSPACE}/\${OUTPUT_FILE}"
+
+            for branch in \${merged_branches}; do
+                last_commit_date_epoch=\$(git log -1 --format=%ct "\${branch}" 2>/dev/null || echo 0)
+                if [ "\${last_commit_date_epoch}" -eq 0 ]; then
+                    continue
+                fi
+                last_commit_date=\$(date -d "@\${last_commit_date_epoch}" +"%Y-%m-%d %H:%M:%S")
+                days_old=\$(( (current_date_epoch - last_commit_date_epoch) / 86400 ))
+
+                if [ "\${days_old}" -gt ${BRANCH_AGE_LIMIT} ]; then
+                    echo "${repoName},\${branch},\${last_commit_date},\${days_old}" >> "\${CSV_FILE}"
+                fi
+            done
+        """
+
+                                    }
+                                }
                             }
-                        }
-                    }
-                    dir("${env.WORKSPACE}"){
-                        //def repoList = readFile(REPO_FILE).split('\n').findAll { it.trim() }
-                        print "Repo List is :"+repoList
-                        repoList.each { repoName ->
-                            print "repo name ="+repoName
-                            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'githubCredentialsId',
-                            usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]){
-                            sh """
-                                cd "${repoName}"
-                                git config --global --add safe.directory '*'
-                                git fetch origin "+refs/heads/*:refs/remotes/origin/*"
-                                git ls-remote --heads origin
-                                merged_branches=\$( \
-                                { \
-                                    git for-each-ref --format='%(refname:short)' refs/remotes/origin/release* 2>/dev/null | while read release_branch; do \
-                                    git branch -r --merged "\$release_branch"; \
-                                    done; \
-                                    git branch -r --merged origin/main 2>/dev/null || true; \
-                                    git branch -r --merged origin/master 2>/dev/null || true; \
-                                } | sort -u | grep -vE 'origin/(master|main|develop|release|staging)' )
+                            dir("${env.WORKSPACE}"){
+                                //def repoList = readFile(REPO_FILE).split('\n').findAll { it.trim() }
+                                print "Repo List is :"+repoList
+                                repoList.each { repoName ->
+                                    print "repo name ="+repoName
+                                    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'githubCredentialsId',
+                                    usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]){
+                                    sh """
+                                        cd "${repoName}"
+                                        git config --global --add safe.directory '*'
+                                        git fetch origin "+refs/heads/*:refs/remotes/origin/*"
+                                        git ls-remote --heads origin
+                                        merged_branches=\$( \
+                                        { \
+                                            git for-each-ref --format='%(refname:short)' refs/remotes/origin/release* 2>/dev/null | while read release_branch; do \
+                                            git branch -r --merged "\$release_branch"; \
+                                            done; \
+                                            git branch -r --merged origin/main 2>/dev/null || true; \
+                                            git branch -r --merged origin/master 2>/dev/null || true; \
+                                        } | sort -u | grep -vE 'origin/(master|main|develop|release|staging)' )
 
-                                echo "Merged Branches:" >> "\${WORKSPACE}/\${OUTPUT_FILE}"
-                                echo "--------" >> "\${WORKSPACE}/\${OUTPUT_FILE}"
-                                for branch in \${merged_branches}; do
-                                    echo "repo name inside for loop = \${repoName}"
-                                    last_commit_date_epoch=\$(git log -1 --format=%ct "\${branch}" 2>/dev/null)
-                                    last_commit_date=\$(date -d "@\${last_commit_date_epoch}" +"%Y-%m-%d %H:%M:%S")
-                                    current_date_epoch=\$(date +%s)
-                                    days_old=\$(( (current_date_epoch - last_commit_date_epoch) / 86400 ))
+                                        echo "Merged Branches:" >> "\${WORKSPACE}/\${OUTPUT_FILE}"
+                                        echo "--------" >> "\${WORKSPACE}/\${OUTPUT_FILE}"
+                                        for branch in \${merged_branches}; do
+                                            echo "repo name inside for loop = \${repoName}"
+                                            last_commit_date_epoch=\$(git log -1 --format=%ct "\${branch}" 2>/dev/null)
+                                            last_commit_date=\$(date -d "@\${last_commit_date_epoch}" +"%Y-%m-%d %H:%M:%S")
+                                            current_date_epoch=\$(date +%s)
+                                            days_old=\$(( (current_date_epoch - last_commit_date_epoch) / 86400 ))
 
-                                    echo "${repoName},\${branch},\${last_commit_date},\${days_old}" >> "\${CSV_FILE}"
-                                done
-
-                            """
+                                            echo "${repoName},\${branch},\${last_commit_date},\${days_old}" >> "\${CSV_FILE}"
+                                        done
+                                    """
                             }        
                         }
                     }
