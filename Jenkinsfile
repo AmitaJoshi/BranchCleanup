@@ -116,7 +116,7 @@ pipeline {
                         //def repoList = readFile(REPO_FILE).split('\n').findAll { it.trim() }
                         print "Repo List is :"+repoList
                         repoList.each { repoName ->
-                            print "repo name ="+repoName
+                            print "repo name before checkout="+repoName
                             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'githubCredentialsId',
                             usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]){
                                 checkout([$class: 'GitSCM',branches: [[name: 'master']],userRemoteConfigs: [[
