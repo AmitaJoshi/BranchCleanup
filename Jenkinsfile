@@ -126,9 +126,9 @@ pipeline {
                                 {
                                     sh """
                                         git config --global http.timeout 900
-                                        /* git clone 'https://github.com/AmitaJoshi/BranchCleanup'
+                                        git clone 'https://github.com/AmitaJoshi/BranchCleanup'
                                         cd /opt/jenkins/.jenkins/workspace/
-                                        git fetch --all */
+                                        git fetch --all
                                         merged_branches=\$(git branch -r --merged | grep -vE 'master|main|develop|release|staging')
                                         echo "Merged Branches:" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
                                         echo "--------" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
