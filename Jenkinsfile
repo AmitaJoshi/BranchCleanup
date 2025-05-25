@@ -120,7 +120,11 @@ pipeline {
                             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'githubCredentialsId',
                             usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]){
                             sh """
-                                cd "${repoName}"
+                                #checkout
+                                checkout([$class: 'GitSCM',branches: [[name: 'master']],userRemoteConfigs: [[
+                                url: "https://github.com/AmitaJoshi/${repoName}.git",
+                                credentialsId: "${env.GITHUB_CREDENTIAL}"]]
+])
                                 git config --global --add safe.directory '*'
                                 git fetch origin "+refs/heads/*:refs/remotes/origin/*"
                                 git ls-remote --heads origin
@@ -155,9 +159,10 @@ pipeline {
                                     fi 
                                     cat "\$CSV_FILE"
                                 done
-
+                            cd ..
                             """
                             }        
+                        
                         }
                     }
                 }
