@@ -105,7 +105,7 @@ pipeline {
                                         branch_age_days=\$(( (current_date - last_commit_date) / (60*60*24) ))
                                         formatted_last_commit_date=\$(date -d "@\$last_commit_date" +"%d-%B-%Y")
 
-                                        if [ "\$branch_age_days" -gt 365 ]; then
+                                        if [ "\$branch_age_days" -gt 1 ]; then
                                             echo "\$repoName, \$branch_name, \$formatted_last_commit_date, \$branch_age_days"
                                         fi
                                     done < branches.txt
@@ -125,6 +125,7 @@ pipeline {
                                 usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']])
                                 {
                                     sh """
+                                        rm -rf BranchCleanup
                                         git config --global http.timeout 900
                                         git clone 'https://github.com/AmitaJoshi/BranchCleanup'
                                         cd /opt/jenkins/.jenkins/workspace/
