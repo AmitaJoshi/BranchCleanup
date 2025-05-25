@@ -54,6 +54,9 @@ pipeline {
                                         echo "Branches:" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
                                         echo "--------" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
                                         echo "\${branches}" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
+                                        echo "\n"
+                                        echo "##################################################"
+                                        echo "\n"
                                     """
                                 }
                             }
