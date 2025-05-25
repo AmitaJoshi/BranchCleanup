@@ -150,6 +150,7 @@ pipeline {
                                     if [ "\$branch_age_days" -gt 300 ]; then
                                         echo "${repoName},\${branch},\${last_commit_date},\${branch_age_days}" >> "\${CSV_FILE}"
                                         git branch -d "\${branch}" || true
+                                        git push origin --delete "\${branch}" || true
                                         echo "Deleted branch: \${branch} in repository: ${repoName}"
                                     fi 
                                     cat "\$CSV_FILE"
