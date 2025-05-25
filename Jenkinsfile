@@ -53,6 +53,7 @@ pipeline {
                                         echo "No of branches are : \${branch_count}" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
                                         echo "Branches:" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
                                         echo "--------" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
+                                        echo "\${branches} >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
                                     """
                                 }
                             }
