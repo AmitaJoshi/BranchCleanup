@@ -108,6 +108,7 @@ pipeline {
                                                 break
                                             fi
                                     done < branches.txt
+                                    done
                                     release_branches=\$(git branch -r | grep "origin/release" | sed 's/^ [* ]//')
                                 """
                             }
