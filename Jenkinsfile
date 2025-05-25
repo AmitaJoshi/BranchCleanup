@@ -1,6 +1,7 @@
+def merged_branches
 pipeline {
     agent any
-    def merged_branches
+    
     /* parameters {
         choice(name: 'REPO_NAMES', choices: ['BranchCleanup'], description: 'select a repository')
     } */
