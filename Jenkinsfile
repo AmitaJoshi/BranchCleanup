@@ -15,7 +15,7 @@ pipeline {
         stage('SetUp') {
             steps {
                 script {
-                    deleteDir()
+                    cleanWs()
                     writeFile file: env.CSV_FILE, text: "REPO_NAME,BRANCH_NAME,LAST_COMMIT_DATE,DAYS_OLD\n"
                 }
             }
@@ -126,24 +126,18 @@ pipeline {
                                 {
                                     sh """
                                         git config --global http.timeout 900
-                                        if (fileExists('BranchCleanup/.git')) {
-                                            dir('BranchCleanup') {
-                                                sh 'git pull'
-                                            }
-                                            } else {
-                                            git clone 'https://github.com/AmitaJoshi/BranchCleanup'
-                                            cd /opt/jenkins/.jenkins/workspace/
-                                            git fetch --all
-                                            merged_branches=\$(git branch -r --merged | grep -vE 'master|main|develop|release|staging')
-                                            echo "Merged Branches:" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
-                                            echo "--------" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
-                                            for branch in \${merged_branches}; do
-                                                last_commit_date=\$(git log -1 --format=%cd --date=iso "\${branch}")
-                                                last_commit_date_epoch=\$(date -d "\${last_commit_date}" +%s)
-                                                current_date_epoch=\$(date +%s)
-                                                days_old=\$(( (\$current_date_epoch - \$last_commit_date_epoch) / 86400 ))
-                                                echo "\${branch},\${last_commit_date},\${days_old}" >> "${env.WORKSPACE}"/"${CSV_FILE}"
-                                        }
+                                        git clone 'https://github.com/AmitaJoshi/BranchCleanup'
+                                        cd /opt/jenkins/.jenkins/workspace/
+                                        git fetch --all
+                                        merged_branches=\$(git branch -r --merged | grep -vE 'master|main|develop|release|staging')
+                                        echo "Merged Branches:" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
+                                        echo "--------" >> "${env.WORKSPACE}"/"${OUTPUT_FILE}"
+                                        for branch in \${merged_branches}; do
+                                            last_commit_date=\$(git log -1 --format=%cd --date=iso "\${branch}")
+                                            last_commit_date_epoch=\$(date -d "\${last_commit_date}" +%s)
+                                            current_date_epoch=\$(date +%s)
+                                            days_old=\$(( (\$current_date_epoch - \$last_commit_date_epoch) / 86400 ))
+                                            echo "\${branch},\${last_commit_date},\${days_old}" >> "${env.WORKSPACE}"/"${CSV_FILE}"
                                         done
                                     """
                                 }
